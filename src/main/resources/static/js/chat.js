@@ -1,0 +1,4 @@
+let stompClient=null;
+function connect(){const socket=new SockJS('/ws');stompClient=Stomp.over(socket);stompClient.debug=null;stompClient.connect({},()=>{stompClient.subscribe('/topic/public',frame=>{const m=JSON.parse(frame.body);const el=document.createElement('div');el.className='chat-line';el.textContent=m.sender+': '+m.content;document.getElementById('chatbox').appendChild(el);});});}
+document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('message');const content=input.value.trim();if(content&&stompClient&&stompClient.connected){stompClient.send('/app/chat.send',{},JSON.stringify({sender:'Community member',content}));input.value='';}});
+connect();
